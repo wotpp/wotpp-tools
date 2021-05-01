@@ -9,9 +9,8 @@ You will need to install the `parse` python library.
 ```sh
 pip install parse
 ```
-The following set of scripts should work automatically. In case
-they don't, that entitles you to the right to open an issue in this
-repo.
+The following set of scripts should work automatically. In the case
+they didn't, please file an issue in this repository.
 ```sh
 ./recreate.sh
 ./fix_includes.sh
@@ -28,7 +27,8 @@ both the CXX and CC variables.
 CXX=clang++ CXX_LD=lld CC=clang CC_LD=lld meson build
 --buildtype=release
 ```
-Build and install:```sh
+Build and install:
+```sh
 ninja -C build
 ```
 ```sh

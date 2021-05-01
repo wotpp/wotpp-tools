@@ -17,9 +17,8 @@ it such that it becomes suitable to be built as a library.\n"#
 h3("Generating the source")
 p#"You will need to install the `parse` python library.\n"#
 sh(c#"pip install parse"#)
-p#"The following set of scripts should work automatically. In case
-they don't, that entitles you to the right to open an issue in this
-repo.\n"#
+p#"The following set of scripts should work automatically. In the case
+they didn't, please file an issue in this repository.\n"#
 sh(c#"./recreate.sh
 ./fix_includes.sh"#)
 
@@ -31,7 +30,7 @@ p#"**NOTE**: If you want to set a custom compiler, remember to set
 both the CXX and CC variables.\n"#
 sh(c#"CXX=clang++ CXX_LD=lld CC=clang CC_LD=lld meson build
 --buildtype=release"#)
-p#"Build and install:"#
+p#"Build and install:\n"#
 sh(c#"ninja -C build"#)
 sh(c#"ninja -C build install"#)
 p#"And you should be good to go.\n"#
