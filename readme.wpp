@@ -1,0 +1,37 @@
+let h1(x) "# " .. x .. "\n"
+let h2(x) "## " .. x .. "\n"
+let h3(x) "### " .. x .. "\n"
+let h4(x) "#### " .. x .. "\n"
+let h5(x) "##### " .. x .. "\n"
+let h6(x) "###### " .. x .. "\n"
+let sh(x) "```sh\n" .. x .. "\n```\n"
+
+h1("libwotpp")
+p#"Interface with [wot++](https://github.com/Jackojc/wotpp) in C++!\n"#
+
+h2("Build")
+p#"This project comes with a handy set of scripts that automatically
+clone the official wot++ repository, and apply some modifications to
+it such that it becomes suitable to be built as a library.\n"#
+
+h3("Generating the source")
+p#"You will need to install the `parse` python library.\n"#
+sh(c#"pip install parse"#)
+p#"The following set of scripts should work automatically. In case
+they don't, that entitles you to the right to open an issue in this
+repo.\n"#
+sh(c#"./recreate.sh
+./fix_includes.sh"#)
+
+h3("Compiling")
+p#"Assuming all the sources have been generated correctly you can now
+build this project normally as a meson/ninja project.\n"#
+sh(c#"meson build --buildtype=release"#)
+p#"**NOTE**: If you want to set a custom compiler, remember to set
+both the CXX and CC variables.\n"#
+sh(c#"CXX=clang++ CXX_LD=lld CC=clang CC_LD=lld meson build
+--buildtype=release"#)
+p#"Build and install:"#
+sh(c#"ninja -C build"#)
+sh(c#"ninja -C build install"#)
+p#"And you should be good to go.\n"#
