@@ -24,8 +24,7 @@ meson build --buildtype=release
 **NOTE**: If you want to set a custom compiler, remember to set
 both the CXX and CC variables.
 ```sh
-CXX=clang++ CXX_LD=lld CC=clang CC_LD=lld meson build
---buildtype=release
+CXX=clang++ CXX_LD=lld CC=clang CC_LD=lld meson build --buildtype=release
 ```
 Build and install:
 ```sh

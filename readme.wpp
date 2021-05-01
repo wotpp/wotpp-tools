@@ -28,8 +28,7 @@ build this project normally as a meson/ninja project.\n"#
 sh(c#"meson build --buildtype=release"#)
 p#"**NOTE**: If you want to set a custom compiler, remember to set
 both the CXX and CC variables.\n"#
-sh(c#"CXX=clang++ CXX_LD=lld CC=clang CC_LD=lld meson build
---buildtype=release"#)
+sh(c#"CXX=clang++ CXX_LD=lld CC=clang CC_LD=lld meson build --buildtype=release"#)
 p#"Build and install:\n"#
 sh(c#"ninja -C build"#)
 sh(c#"ninja -C build install"#)
