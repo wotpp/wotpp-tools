@@ -60,7 +60,7 @@ inline std::string params(const std::vector<std::string>& args) {
 	for (const auto& arg: args) {
 		result += arg;
 		if (i++ < args.size() - 1)
-			result += " ";
+			result += ", ";
 	}
 
 	return result;
@@ -103,11 +103,16 @@ inline std::string format(wpp::node_t node_id, wpp::Env& env, int tab_width=0) {
 					  },
 					  [&] (const Fn& x) {
 						  auto let = "let " + call(x.identifier.str(), apply<wpp::View, std::string>(x.parameters, [](wpp::View view) { return view.str(); }));
+						  auto body = format(x.body, env, tab_width);
 
 						  if (std::holds_alternative<Block>(env.ast[x.body]))
-							  let += " " + format(x.body, env, tab_width);
-						  else
-							  let += "\n" + tabs(tab_width+1) + format(x.body, env, tab_width+1);
+							let += " " + body;
+						  else {
+    						  	if (body.size() > 16)
+								let += "\n" + tabs(tab_width+1) + format(x.body, env, tab_width+1);
+    						  	else
+        						  	let += " " + body;
+						  }
 
 						  return let + "\n";
 					  },
@@ -119,11 +124,16 @@ inline std::string format(wpp::node_t node_id, wpp::Env& env, int tab_width=0) {
 					  },
 					  [&] (const Var& x) {
 						  auto let = "let " + x.identifier.str();
+						  auto body = format(x.body, env, tab_width);
 
 						  if (std::holds_alternative<Block>(env.ast[x.body]))
-							  let += " " + format(x.body, env, tab_width);
-						  else
-							  let += "\n" + tabs(tab_width+1) + format(x.body, env, tab_width+1);
+							let += " " + body;
+						  else {
+    						  	if (body.size() > 16)
+								let += "\n" + tabs(tab_width+1) + format(x.body, env, tab_width+1);
+    						  	else
+        						  	let += " " + body;
+						  }
 
 						  return let + "\n";
 					  },
@@ -188,7 +198,7 @@ int main(int argc, const char *argv[]) {
 	std::vector<const char*> positional;
 
 	if (wpp::argparser(
-			wpp::Meta{"1.0.0", "A simple utility for visualizing the AST of a Wot++ program."},
+			wpp::Info{"1.0.0", "A simple utility for visualizing the AST of a Wot++ program."},
 			argc, argv, &positional
 			))
 		return 0;
@@ -205,7 +215,7 @@ int main(int argc, const char *argv[]) {
 			env.sources.push(path, wpp::read_file(path), wpp::modes::normal);
 
 			wpp::node_t root = wpp::parse(env);
-			if (env.state & wpp::INTERNAL_ERROR_STATE)
+			if (env.state & wpp::ABORT_EVALUATION)
 				return 1;
 
 			std::cout << format(root, env) << std::endl;
@@ -216,10 +226,26 @@ int main(int argc, const char *argv[]) {
 			return 1;
 		}
 
-		catch (const wpp::FileError&) {
-			std::cerr << "error: file '" << fname << "' not found\n";
-			return 1;
+		catch (const wpp::FileNotFoundError&) {
+				std::cerr << "error: file '" << fname << "' not found\n";
+				return 1;
 		}
+
+		catch (const wpp::NotFileError&) {
+				std::cerr << "error: '" << fname << "' is not a file\n";
+				return 1;
+		}
+
+		catch (const wpp::FileReadError&) {
+				std::cerr << "error: cannot read '" << fname << "'\n";
+				return 1;
+		}
+
+		catch (const wpp::SymlinkError&) {
+				std::cerr << "error: symlink '" << fname << "' resolves to itself\n";
+				return 1;
+		}
+
 
 		std::filesystem::current_path(initial_path);
 	}
